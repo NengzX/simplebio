@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NengzX :: Security Researcher</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Source+Code+Pro:wght@300;400;600&display=swap');
+        
+        :root {
+            --main-color: #0f0;
+            --bg-color: #0a0a0a;
+            --secondary-color: #00b7ff;
+            --terminal-bg: rgba(0, 20, 0, 0.6);
+            --text-color: #ccc;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Source Code Pro', monospace;
+        }
+        
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            min-height: 100vh;
+            overflow-x: hidden;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(0, 80, 0, 0.1) 0%, transparent 20%),
+                radial-gradient(circle at 90% 60%, rgba(0, 180, 255, 0.1) 0%, transparent 20%);
+            position: relative;
+        }
+        
+        #matrix-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.15;
+        }
+        
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+        
+        .logo {
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            border: 3px solid var(--main-color);
+            padding: 5px;
+            margin: 2rem 0;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 0 25px var(--main-color);
+            animation: pulse 3s infinite alternate;
+        }
+        
+        .logo img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        
+        .glitch-container {
+            position: relative;
+            margin: 1.5rem 0;
+        }
+        
+        .glitch {
+            font-size: 3.5rem;
+            font-weight: 700;
+            color: var(--main-color);
+            font-family: 'Share Tech Mono', monospace;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            position: relative;
+            text-shadow: 2px 2px 0px var(--secondary-color);
+            animation: glitch-effect 5s infinite;
+        }
+        
+        .terminal {
+            background: var(--terminal-bg);
+            border: 1px solid var(--main-color);
+            border-radius: 10px;
+            width: 100%;
+            max-width: 800px;
+            margin: 2rem 0;
+            padding: 1.5rem;
+            box-shadow: 0 0 20px rgba(0, 255, 0, 0.2);
+            overflow: hidden;
+        }
+        
+        .terminal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--main-color);
+        }
+        
+        .terminal-title {
+            font-size: 1.2rem;
+            color: var(--main-color);
+        }
+        
+        .terminal-controls {
+            display: flex;
+        }
+        
+        .control {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-left: 8px;
+        }
+        
+        .control.close { background-color: #ff5f56; }
+        .control.minimize { background-color: #ffbd2e; }
+        .control.maximize { background-color: #27c93f; }
+        
+        .terminal-content {
+            line-height: 1.6;
+        }
+        
+        .command {
+            color: var(--secondary-color);
+            margin-bottom: 0.8rem;
+        }
+        
+        .command::before {
+            content: "> ";
+            color: var(--main-color);
+        }
+        
+        .output {
+            margin-bottom: 1.5rem;
+            padding-left: 1.5rem;
+        }
+        
+        .social-buttons {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+        
+        .btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.8rem 1.5rem;
+            background: rgba(0, 30, 0, 0.8);
+            color: var(--main-color);
+            text-decoration: none;
+            border: 1px solid var(--main-color);
+            border-radius: 4px;
+            font-family: 'Share Tech Mono', monospace;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            width: 180px;
+        }
+        
+        .btn i {
+            margin-right: 10px;
+            font-size: 1.2rem;
+        }
+        
+        .btn:hover {
+            background: rgba(0, 80, 0, 0.8);
+            box-shadow: 0 0 15px var(--main-color);
+            transform: translateY(-3px);
+        }
+        
+        .btn::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 255, 0, 0.4), transparent);
+            transition: 0.5s;
+        }
+        
+        .btn:hover::before {
+            left: 100%;
+        }
+        
+        .motto {
+            text-align: center;
+            margin: 2rem 0;
+            font-style: italic;
+            color: var(--secondary-color);
+            border-top: 1px solid var(--main-color);
+            border-bottom: 1px solid var(--main-color);
+            padding: 1rem;
+            width: 100%;
+            max-width: 600px;
+        }
+        
+        .typewriter {
+            overflow: hidden;
+            border-right: 0.15em solid var(--main-color);
+            white-space: nowrap;
+            margin: 0 auto;
+            letter-spacing: 0.15em;
+            animation: typing 3.5s steps(40, end), blink-caret 0.75s step-end infinite;
+        }
+        
+        .hacking-animation {
+            height: 30px;
+            background: rgba(0, 20, 0, 0.7);
+            border: 1px solid var(--main-color);
+            margin: 1rem 0;
+            padding: 0.5rem;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .code-line {
+            position: absolute;
+            width: 100%;
+            color: var(--main-color);
+            font-size: 0.9rem;
+        }
+        
+        .audio-control {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(0, 30, 0, 0.8);
+            border: 1px solid var(--main-color);
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--main-color);
+            cursor: pointer;
+            z-index: 100;
+            box-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
+        }
+        
+        .audio-control:hover {
+            background: rgba(0, 80, 0, 0.8);
+        }
+        
+        footer {
+            margin-top: auto;
+            padding: 1.5rem;
+            text-align: center;
+            width: 100%;
+            border-top: 1px solid rgba(0, 255, 0, 0.2);
+        }
+        
+        /* Animations */
+        @keyframes pulse {
+            0% { box-shadow: 0 0 15px var(--main-color); }
+            100% { box-shadow: 0 0 30px var(--main-color), 0 0 60px rgba(0, 255, 0, 0.4); }
+        }
+        
+        @keyframes glitch-effect {
+            0% { text-shadow: 2px 2px 0px var(--secondary-color); }
+            92% { text-shadow: 2px 2px 0px var(--secondary-color); }
+            93% { text-shadow: -3px -3px 0px #ff00ff; }
+            94% { text-shadow: 2px 2px 0px var(--secondary-color); }
+            95% { text-shadow: 3px -3px 0px #ffff00; }
+            96% { text-shadow: 2px 2px 0px var(--secondary-color); }
+            97% { text-shadow: -4px 4px 0px #00ffff; }
+            98% { text-shadow: 2px 2px 0px var(--secondary-color); }
+            99% { text-shadow: 3px 3px 0px #ff0000; }
+            100% { text-shadow: 2px 2px 0px var(--secondary-color); }
+        }
+        
+        @keyframes typing {
+            from { width: 0 }
+            to { width: 100% }
+        }
+        
+        @keyframes blink-caret {
+            from, to { border-color: transparent }
+            50% { border-color: var(--main-color) }
+        }
+        
+        @keyframes matrix {
+            0% { transform: translateY(-100%); opacity: 1; }
+            5% { opacity: 1; }
+            80% { opacity: 0.8; }
+            100% { transform: translateY(100vh); opacity: 0; }
+        }
+        
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .glitch { font-size: 2.5rem; }
+            .terminal { padding: 1rem; }
+            .social-buttons { gap: 1rem; }
+            .btn { width: 160px; padding: 0.7rem 1rem; }
+        }
+        
+        @media (max-width: 480px) {
+            .glitch { font-size: 2rem; }
+            .logo { width: 140px; height: 140px; }
+            .btn { width: 100%; max-width: 250px; }
+        }
+    </style>
+</head>
+<body>
+    <canvas id="matrix-bg"></canvas>
+    
+    <div class="container">
+        <div class="logo">
+            <img src="https://i.ibb.co/9mM42sT5/photo-2025-08-31-19-37-09-modified.png" alt="NengzX Logo">
+        </div>
+        
+        <div class="glitch-container">
+            <h1 class="glitch">NengzXploit</h1>
+        </div>
+        
+        <div class="terminal">
+            <div class="terminal-header">
+                <div class="terminal-title">user@nengzx:~$ bio --display</div>
+                <div class="terminal-controls">
+                    <div class="control close"></div>
+                    <div class="control minimize"></div>
+                    <div class="control maximize"></div>
+                </div>
+            </div>
+            <div class="terminal-content">
+                <p class="command">whois NengzX</p>
+                <p class="output">Name: NengzXploit<br>
+                Location: Phnom Penh, Cambodia<br>
+                Work: Security Researcher & Developer</p>
+                
+                <p class="command">cat interests.txt</p>
+                <p class="output">Cybersecurity, GNU/Linux, Open Source</p>
+                
+                <p class="command">cat gaming.txt</p>
+                <p class="output">PUBGM, MLBB, COC</p>
+                
+                <p class="command">./daily_routine.sh</p>
+                <p class="output">Code, Hack, Learn, Game, Repeat</p>
+                
+                <div class="hacking-animation">
+                    <div class="code-line">Initializing system... [##########] 100%</div>
+                </div>
+                
+                <p class="command">echo $LIFE_MOTTO</p>
+                <p class="typewriter">Simple tools, massive impact</p>
+            </div>
+        </div>
+        
+        <div class="social-buttons">
+            <a href="https://www.facebook.com/nengzxroot/" class="btn" target="_blank">
+                <i class="fab fa-facebook-f"></i> Facebook
+            </a>
+            <a href="https://github.com/NengzX" class="btn" target="_blank">
+                <i class="fab fa-github"></i> GitHub
+            </a>
+            <a href="https://t.me/NengzX_theGOAT" class="btn" target="_blank">
+                <i class="fab fa-telegram-plane"></i> Telegram
+            </a>
+        </div>
+        
+        <div class="motto">
+            "In the realm of ones and zeros, we find our freedom"
+        </div>
+        
+        <footer>
+            <p>NengzX &copy; 2023 | Secure. Develop. Conquer.</p>
+        </footer>
+    </div>
+    
+    <div class="audio-control" onclick="toggleAudio()">
+        <i class="fas fa-music"></i>
+    </div>
+    
+    <audio id="bgAudio" loop>
+        <source src="https://a.top4top.io/m_3531tclr71.mp3" type="audio/mpeg">
+    </audio>
+    
+    <script>
+        // Matrix background effect
+        const canvas = document.getElementById('matrix-bg');
+        const ctx = canvas.getContext('2d');
+        
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        
+        const letters = '01010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101';
+        const fontSize = 12;
+        const columns = canvas.width / fontSize;
+        
+        const drops = [];
+        for (let i = 0; i < columns; i++) {
+            drops[i] = 1;
+        }
+        
+        function drawMatrix() {
+            ctx.fillStyle = 'rgba(0, 10, 0, 0.1)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            ctx.fillStyle = '#0f0';
+            ctx.font = `${fontSize}px monospace`;
+            
+            for (let i = 0; i < drops.length; i++) {
+                const text = letters[Math.floor(Math.random() * letters.length)];
+                ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+                
+                if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+                    drops[i] = 0;
+                }
+                
+                drops[i]++;
+            }
+        }
+        
+        setInterval(drawMatrix, 50);
+        
+        // Window resize handler
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+        
+        // Hacking animation
+        const codeLines = [
+            "Initializing system... [##########] 100%",
+            "Accessing mainframe... SUCCESS",
+            "Bypassing security protocols... OK",
+            "Encrypting connection... DONE",
+            "Running vulnerability scan...",
+            "> 0 critical issues detected",
+            "System secure. Have a nice day."
+        ];
+        
+        const hackingElement = document.querySelector('.hacking-animation');
+        let currentLine = 0;
+        
+        function updateHackingAnimation() {
+            hackingElement.innerHTML = `<div class="code-line">${codeLines[currentLine]}</div>`;
+            currentLine = (currentLine + 1) % codeLines.length;
+        }
+        
+        setInterval(updateHackingAnimation, 2000);
+        
+        // Audio control
+        const audio = document.getElementById('bgAudio');
+        let audioPlaying = false;
+        
+        function toggleAudio() {
+            if (audioPlaying) {
+                audio.pause();
+                document.querySelector('.audio-control i').className = 'fas fa-music';
+            } else {
+                audio.play();
+                document.querySelector('.audio-control i').className = 'fas fa-pause';
+            }
+            audioPlaying = !audioPlaying;
+        }
+        
+        // Start audio on user interaction
+        document.body.addEventListener('click', function() {
+            if (!audioPlaying) {
+                audio.play().then(() => {
+                    audioPlaying = true;
+                    document.querySelector('.audio-control i').className = 'fas fa-pause';
+                }).catch(err => {
+                    console.log('Audio playback failed:', err);
+                });
+            }
+        }, { once: true });
+        
+        // Glitch effect
+        const glitchElement = document.querySelector('.glitch');
+        
+        function triggerGlitch() {
+            glitchElement.style.animation = 'none';
+            void glitchElement.offsetWidth; // Trigger reflow
+            glitchElement.style.animation = 'glitch-effect 5s infinite';
+        }
+        
+        setInterval(triggerGlitch, 5000);
+    </script>
+</body>
+</html>
