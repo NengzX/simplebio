@@ -14,6 +14,20 @@
             --secondary-color: #00b7ff;
             --terminal-bg: rgba(0, 20, 0, 0.6);
             --text-color: #ccc;
+            --card-bg: rgba(20, 20, 20, 0.8);
+            --button-bg: rgba(0, 30, 0, 0.8);
+            --shadow-color: rgba(0, 255, 0, 0.5);
+        }
+        
+        .light-theme {
+            --main-color: #0066cc;
+            --bg-color: #f0f0f0;
+            --secondary-color: #ff6600;
+            --terminal-bg: rgba(240, 240, 240, 0.9);
+            --text-color: #333;
+            --card-bg: rgba(255, 255, 255, 0.9);
+            --button-bg: rgba(230, 230, 230, 0.9);
+            --shadow-color: rgba(0, 102, 204, 0.4);
         }
         
         * {
@@ -21,6 +35,7 @@
             padding: 0;
             box-sizing: border-box;
             font-family: 'Source Code Pro', monospace;
+            transition: background-color 0.5s ease, color 0.5s ease, border-color 0.5s ease;
         }
         
         body {
@@ -32,6 +47,12 @@
                 radial-gradient(circle at 10% 20%, rgba(0, 80, 0, 0.1) 0%, transparent 20%),
                 radial-gradient(circle at 90% 60%, rgba(0, 180, 255, 0.1) 0%, transparent 20%);
             position: relative;
+        }
+        
+        body.light-theme {
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(0, 102, 204, 0.1) 0%, transparent 20%),
+                radial-gradient(circle at 90% 60%, rgba(255, 102, 0, 0.1) 0%, transparent 20%);
         }
         
         #matrix-bg {
@@ -63,7 +84,7 @@
             margin: 2rem 0;
             position: relative;
             overflow: hidden;
-            box-shadow: 0 0 25px var(--main-color);
+            box-shadow: 0 0 25px var(--shadow-color);
             animation: pulse 3s infinite alternate;
         }
         
@@ -99,7 +120,7 @@
             max-width: 800px;
             margin: 2rem 0;
             padding: 1.5rem;
-            box-shadow: 0 0 20px rgba(0, 255, 0, 0.2);
+            box-shadow: 0 0 20px var(--shadow-color);
             overflow: hidden;
         }
         
@@ -159,12 +180,13 @@
             margin: 2rem 0;
         }
         
-        .btn {
+        /* 3D Button Style */
+        .btn-3d {
             display: flex;
             align-items: center;
             justify-content: center;
             padding: 0.8rem 1.5rem;
-            background: rgba(0, 30, 0, 0.8);
+            background: var(--button-bg);
             color: var(--main-color);
             text-decoration: none;
             border: 1px solid var(--main-color);
@@ -176,20 +198,31 @@
             position: relative;
             overflow: hidden;
             width: 180px;
+            transform: translateY(0);
+            box-shadow: 0 4px 0 darkgreen,
+                        0 8px 10px rgba(0, 0, 0, 0.3);
         }
         
-        .btn i {
+        .btn-3d i {
             margin-right: 10px;
             font-size: 1.2rem;
         }
         
-        .btn:hover {
-            background: rgba(0, 80, 0, 0.8);
-            box-shadow: 0 0 15px var(--main-color);
-            transform: translateY(-3px);
+        .btn-3d:hover {
+            background: var(--button-bg);
+            box-shadow: 0 2px 0 darkgreen,
+                        0 4px 8px rgba(0, 0, 0, 0.3);
+            transform: translateY(2px);
         }
         
-        .btn::before {
+        .btn-3d:active {
+            box-shadow: 0 0 0 darkgreen,
+                        0 0 5px rgba(0, 0, 0, 0.3);
+            transform: translateY(4px);
+            transition: all 0.1s ease;
+        }
+        
+        .btn-3d::before {
             content: "";
             position: absolute;
             top: 0;
@@ -200,8 +233,23 @@
             transition: 0.5s;
         }
         
-        .btn:hover::before {
+        .btn-3d:hover::before {
             left: 100%;
+        }
+        
+        .light-theme .btn-3d {
+            box-shadow: 0 4px 0 #004d99,
+                        0 8px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .light-theme .btn-3d:hover {
+            box-shadow: 0 2px 0 #004d99,
+                        0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .light-theme .btn-3d:active {
+            box-shadow: 0 0 0 #004d99,
+                        0 0 5px rgba(0, 0, 0, 0.1);
         }
         
         .motto {
@@ -227,7 +275,7 @@
         
         .hacking-animation {
             height: 30px;
-            background: rgba(0, 20, 0, 0.7);
+            background: var(--terminal-bg);
             border: 1px solid var(--main-color);
             margin: 1rem 0;
             padding: 0.5rem;
@@ -246,7 +294,7 @@
             position: fixed;
             bottom: 20px;
             right: 20px;
-            background: rgba(0, 30, 0, 0.8);
+            background: var(--button-bg);
             border: 1px solid var(--main-color);
             border-radius: 50%;
             width: 50px;
@@ -257,11 +305,33 @@
             color: var(--main-color);
             cursor: pointer;
             z-index: 100;
-            box-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
+            box-shadow: 0 0 10px var(--shadow-color);
         }
         
         .audio-control:hover {
-            background: rgba(0, 80, 0, 0.8);
+            background: var(--button-bg);
+        }
+        
+        .theme-toggle {
+            position: fixed;
+            bottom: 80px;
+            right: 20px;
+            background: var(--button-bg);
+            border: 1px solid var(--main-color);
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--main-color);
+            cursor: pointer;
+            z-index: 100;
+            box-shadow: 0 0 10px var(--shadow-color);
+        }
+        
+        .theme-toggle:hover {
+            background: var(--button-bg);
         }
         
         footer {
@@ -269,13 +339,13 @@
             padding: 1.5rem;
             text-align: center;
             width: 100%;
-            border-top: 1px solid rgba(0, 255, 0, 0.2);
+            border-top: 1px solid var(--main-color);
         }
         
         /* Animations */
         @keyframes pulse {
-            0% { box-shadow: 0 0 15px var(--main-color); }
-            100% { box-shadow: 0 0 30px var(--main-color), 0 0 60px rgba(0, 255, 0, 0.4); }
+            0% { box-shadow: 0 0 15px var(--shadow-color); }
+            100% { box-shadow: 0 0 30px var(--shadow-color), 0 0 60px var(--shadow-color); }
         }
         
         @keyframes glitch-effect {
@@ -313,13 +383,13 @@
             .glitch { font-size: 2.5rem; }
             .terminal { padding: 1rem; }
             .social-buttons { gap: 1rem; }
-            .btn { width: 160px; padding: 0.7rem 1rem; }
+            .btn-3d { width: 160px; padding: 0.7rem 1rem; }
         }
         
         @media (max-width: 480px) {
             .glitch { font-size: 2rem; }
             .logo { width: 140px; height: 140px; }
-            .btn { width: 100%; max-width: 250px; }
+            .btn-3d { width: 100%; max-width: 250px; }
         }
     </style>
 </head>
@@ -369,13 +439,13 @@
         </div>
         
         <div class="social-buttons">
-            <a href="https://www.facebook.com/nengzxroot/" class="btn" target="_blank">
+            <a href="https://www.facebook.com/nengzxroot/" class="btn-3d" target="_blank">
                 <i class="fab fa-facebook-f"></i> Facebook
             </a>
-            <a href="https://github.com/NengzX" class="btn" target="_blank">
+            <a href="https://github.com/NengzX" class="btn-3d" target="_blank">
                 <i class="fab fa-github"></i> GitHub
             </a>
-            <a href="https://t.me/NengzX_theGOAT" class="btn" target="_blank">
+            <a href="https://t.me/NengzX_theGOAT" class="btn-3d" target="_blank">
                 <i class="fab fa-telegram-plane"></i> Telegram
             </a>
         </div>
@@ -391,6 +461,10 @@
     
     <div class="audio-control" onclick="toggleAudio()">
         <i class="fas fa-music"></i>
+    </div>
+    
+    <div class="theme-toggle" onclick="toggleTheme()">
+        <i class="fas fa-moon"></i>
     </div>
     
     <audio id="bgAudio" loop>
@@ -418,7 +492,7 @@
             ctx.fillStyle = 'rgba(0, 10, 0, 0.1)';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
             
-            ctx.fillStyle = '#0f0';
+            ctx.fillStyle = document.body.classList.contains('light-theme') ? '#0066cc' : '#0f0';
             ctx.font = `${fontSize}px monospace`;
             
             for (let i = 0; i < drops.length; i++) {
@@ -477,17 +551,52 @@
             audioPlaying = !audioPlaying;
         }
         
-        // Start audio on user interaction
-        document.body.addEventListener('click', function() {
-            if (!audioPlaying) {
-                audio.play().then(() => {
-                    audioPlaying = true;
-                    document.querySelector('.audio-control i').className = 'fas fa-pause';
-                }).catch(err => {
-                    console.log('Audio playback failed:', err);
-                });
+        // Auto-play music on page load
+        window.addEventListener('load', function() {
+            audio.play().then(() => {
+                audioPlaying = true;
+                document.querySelector('.audio-control i').className = 'fas fa-pause';
+            }).catch(err => {
+                console.log('Auto-play prevented:', err);
+                // Add a fallback for user interaction
+                document.body.addEventListener('click', function() {
+                    if (!audioPlaying) {
+                        audio.play().then(() => {
+                            audioPlaying = true;
+                            document.querySelector('.audio-control i').className = 'fas fa-pause';
+                        }).catch(err => {
+                            console.log('Audio playback failed:', err);
+                        });
+                    }
+                }, { once: true });
+            });
+        });
+        
+        // Theme toggle functionality
+        function toggleTheme() {
+            const body = document.body;
+            const themeIcon = document.querySelector('.theme-toggle i');
+            
+            if (body.classList.contains('light-theme')) {
+                body.classList.remove('light-theme');
+                themeIcon.className = 'fas fa-moon';
+                localStorage.setItem('theme', 'dark');
+            } else {
+                body.classList.add('light-theme');
+                themeIcon.className = 'fas fa-sun';
+                localStorage.setItem('theme', 'light');
             }
-        }, { once: true });
+            
+            // Update matrix color
+            drawMatrix();
+        }
+        
+        // Check for saved theme preference
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'light') {
+            document.body.classList.add('light-theme');
+            document.querySelector('.theme-toggle i').className = 'fas fa-sun';
+        }
         
         // Glitch effect
         const glitchElement = document.querySelector('.glitch');
