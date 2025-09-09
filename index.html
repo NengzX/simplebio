@@ -6,86 +6,120 @@
     <title>NengzX :: Security Researcher</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Source+Code+Pro:wght@300;400;600&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap');
         
         :root {
-            --main-color: #0f0;
-            --bg-color: #0a0a0a;
-            --secondary-color: #00b7ff;
-            --terminal-bg: rgba(0, 20, 0, 0.6);
-            --text-color: #ccc;
-            --card-bg: rgba(20, 20, 20, 0.8);
-            --button-bg: rgba(0, 30, 0, 0.8);
-            --shadow-color: rgba(0, 255, 0, 0.5);
-        }
-        
-        .light-theme {
-            --main-color: #0066cc;
-            --bg-color: #f0f0f0;
-            --secondary-color: #ff6600;
-            --terminal-bg: rgba(240, 240, 240, 0.9);
-            --text-color: #333;
-            --card-bg: rgba(255, 255, 255, 0.9);
-            --button-bg: rgba(230, 230, 230, 0.9);
-            --shadow-color: rgba(0, 102, 204, 0.4);
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --secondary: #8b5cf6;
+            --accent: #06b6d4;
+            --text: #1f2937;
+            --text-light: #6b7280;
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+            --shadow: rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
         }
         
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Source Code Pro', monospace;
-            transition: background-color 0.5s ease, color 0.5s ease, border-color 0.5s ease;
+            font-family: 'Poppins', sans-serif;
         }
         
         body {
-            background-color: var(--bg-color);
-            color: var(--text-color);
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            color: var(--text);
             min-height: 100vh;
             overflow-x: hidden;
-            background-image: 
-                radial-gradient(circle at 10% 20%, rgba(0, 80, 0, 0.1) 0%, transparent 20%),
-                radial-gradient(circle at 90% 60%, rgba(0, 180, 255, 0.1) 0%, transparent 20%);
-            position: relative;
         }
         
-        body.light-theme {
-            background-image: 
-                radial-gradient(circle at 10% 20%, rgba(0, 102, 204, 0.1) 0%, transparent 20%),
-                radial-gradient(circle at 90% 60%, rgba(255, 102, 0, 0.1) 0%, transparent 20%);
-        }
-        
-        #matrix-bg {
+        /* Loading Screen */
+        #loading-screen {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            z-index: -1;
-            opacity: 0.15;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease-out, visibility 0.5s;
         }
         
+        .loader {
+            width: 60px;
+            height: 60px;
+            border: 5px solid rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            border-top: 5px solid white;
+            animation: spin 1.2s linear infinite;
+            margin-bottom: 20px;
+        }
+        
+        .loader-text {
+            color: white;
+            font-size: 1.2rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+        
+        .progress-bar {
+            width: 200px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 4px;
+            margin-top: 15px;
+            overflow: hidden;
+        }
+        
+        .progress {
+            height: 100%;
+            width: 0%;
+            background: white;
+            border-radius: 4px;
+            transition: width 0.4s ease;
+        }
+        
+        /* Main Content */
         .container {
-            max-width: 1100px;
+            max-width: 1200px;
             margin: 0 auto;
             padding: 2rem;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+        
+        .header {
             display: flex;
             flex-direction: column;
             align-items: center;
-            min-height: 100vh;
+            margin-bottom: 3rem;
         }
         
         .logo {
             width: 180px;
             height: 180px;
             border-radius: 50%;
-            border: 3px solid var(--main-color);
-            padding: 5px;
+            padding: 8px;
             margin: 2rem 0;
             position: relative;
             overflow: hidden;
-            box-shadow: 0 0 25px var(--shadow-color);
-            animation: pulse 3s infinite alternate;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            box-shadow: 0 15px 30px rgba(37, 99, 235, 0.2);
+            transform-style: preserve-3d;
+            transform: translateZ(20px);
+            transition: var(--transition);
+        }
+        
+        .logo:hover {
+            transform: translateZ(30px) rotate(5deg);
+            box-shadow: 0 20px 40px rgba(37, 99, 235, 0.3);
         }
         
         .logo img {
@@ -93,114 +127,129 @@
             height: 100%;
             border-radius: 50%;
             object-fit: cover;
+            border: 4px solid white;
         }
         
-        .glitch-container {
-            position: relative;
-            margin: 1.5rem 0;
-        }
-        
-        .glitch {
+        .name {
             font-size: 3.5rem;
             font-weight: 700;
-            color: var(--main-color);
-            font-family: 'Share Tech Mono', monospace;
-            text-transform: uppercase;
-            letter-spacing: 3px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin: 1rem 0;
+            text-align: center;
             position: relative;
-            text-shadow: 2px 2px 0px var(--secondary-color);
-            animation: glitch-effect 5s infinite;
         }
         
-        .terminal {
-            background: var(--terminal-bg);
-            border: 1px solid var(--main-color);
-            border-radius: 10px;
-            width: 100%;
-            max-width: 800px;
-            margin: 2rem 0;
-            padding: 1.5rem;
-            box-shadow: 0 0 20px var(--shadow-color);
-            overflow: hidden;
+        .name::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 4px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            border-radius: 2px;
         }
         
-        .terminal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1.5rem;
-            padding-bottom: 0.5rem;
-            border-bottom: 1px solid var(--main-color);
-        }
-        
-        .terminal-title {
+        .title {
+            color: var(--text-light);
             font-size: 1.2rem;
-            color: var(--main-color);
+            margin-bottom: 1rem;
+            text-align: center;
         }
         
-        .terminal-controls {
-            display: flex;
-        }
-        
-        .control {
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            margin-left: 8px;
-        }
-        
-        .control.close { background-color: #ff5f56; }
-        .control.minimize { background-color: #ffbd2e; }
-        .control.maximize { background-color: #27c93f; }
-        
-        .terminal-content {
-            line-height: 1.6;
-        }
-        
-        .command {
-            color: var(--secondary-color);
-            margin-bottom: 0.8rem;
-        }
-        
-        .command::before {
-            content: "> ";
-            color: var(--main-color);
-        }
-        
-        .output {
-            margin-bottom: 1.5rem;
-            padding-left: 1.5rem;
-        }
-        
-        .social-buttons {
-            display: flex;
-            justify-content: center;
-            flex-wrap: wrap;
-            gap: 1.5rem;
-            margin: 2rem 0;
-        }
-        
-        /* 3D Button Style */
-        .btn-3d {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 0.8rem 1.5rem;
-            background: var(--button-bg);
-            color: var(--main-color);
-            text-decoration: none;
-            border: 1px solid var(--main-color);
-            border-radius: 4px;
-            font-family: 'Share Tech Mono', monospace;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            transition: all 0.3s ease;
+        /* Cards */
+        .card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 2.5rem;
+            box-shadow: 0 10px 30px var(--shadow);
+            transform-style: preserve-3d;
+            transform: translateZ(10px);
+            transition: var(--transition);
             position: relative;
             overflow: hidden;
-            width: 180px;
+        }
+        
+        .card:hover {
+            transform: translateZ(20px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+        }
+        
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+        }
+        
+        .card-title {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+        }
+        
+        .card-title i {
+            margin-right: 10px;
+            font-size: 1.8rem;
+        }
+        
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .info-item {
+            padding: 1rem;
+            background: rgba(37, 99, 235, 0.05);
+            border-radius: 12px;
+            transition: var(--transition);
+        }
+        
+        .info-item:hover {
+            background: rgba(37, 99, 235, 0.1);
+            transform: translateY(-5px);
+        }
+        
+        .info-label {
+            font-size: 0.9rem;
+            color: var(--text-light);
+            margin-bottom: 0.5rem;
+        }
+        
+        .info-value {
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: var(--primary);
+        }
+        
+        /* 3D Button */
+        .btn-3d {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem 2rem;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 12px;
+            font-weight: 500;
+            box-shadow: 0 5px 15px rgba(37, 99, 235, 0.4);
+            transform-style: preserve-3d;
             transform: translateY(0);
-            box-shadow: 0 4px 0 darkgreen,
-                        0 8px 10px rgba(0, 0, 0, 0.3);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+            margin: 0.5rem;
         }
         
         .btn-3d i {
@@ -209,236 +258,234 @@
         }
         
         .btn-3d:hover {
-            background: var(--button-bg);
-            box-shadow: 0 2px 0 darkgreen,
-                        0 4px 8px rgba(0, 0, 0, 0.3);
-            transform: translateY(2px);
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(37, 99, 235, 0.5);
         }
         
         .btn-3d:active {
-            box-shadow: 0 0 0 darkgreen,
-                        0 0 5px rgba(0, 0, 0, 0.3);
-            transform: translateY(4px);
-            transition: all 0.1s ease;
+            transform: translateY(2px);
+            box-shadow: 0 3px 10px rgba(37, 99, 235, 0.4);
         }
         
         .btn-3d::before {
-            content: "";
+            content: '';
             position: absolute;
             top: 0;
-            left: -100%;
+            left: 0;
             width: 100%;
             height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(0, 255, 0, 0.4), transparent);
-            transition: 0.5s;
+            background: linear-gradient(rgba(255, 255, 255, 0.2), transparent);
+            clip-path: polygon(0 0, 100% 0, 100% 70%, 0 100%);
         }
         
-        .btn-3d:hover::before {
-            left: 100%;
-        }
-        
-        .light-theme .btn-3d {
-            box-shadow: 0 4px 0 #004d99,
-                        0 8px 10px rgba(0, 0, 0, 0.1);
-        }
-        
-        .light-theme .btn-3d:hover {
-            box-shadow: 0 2px 0 #004d99,
-                        0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-        
-        .light-theme .btn-3d:active {
-            box-shadow: 0 0 0 #004d99,
-                        0 0 5px rgba(0, 0, 0, 0.1);
-        }
-        
-        .motto {
-            text-align: center;
+        .social-buttons {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 1rem;
             margin: 2rem 0;
-            font-style: italic;
-            color: var(--secondary-color);
-            border-top: 1px solid var(--main-color);
-            border-bottom: 1px solid var(--main-color);
-            padding: 1rem;
-            width: 100%;
-            max-width: 600px;
         }
         
-        .typewriter {
-            overflow: hidden;
-            border-right: 0.15em solid var(--main-color);
-            white-space: nowrap;
-            margin: 0 auto;
-            letter-spacing: 0.15em;
-            animation: typing 3.5s steps(40, end), blink-caret 0.75s step-end infinite;
-        }
-        
-        .hacking-animation {
-            height: 30px;
-            background: var(--terminal-bg);
-            border: 1px solid var(--main-color);
-            margin: 1rem 0;
-            padding: 0.5rem;
-            overflow: hidden;
+        /* Quote */
+        .quote {
+            text-align: center;
+            padding: 2rem;
+            margin: 3rem 0;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            border-radius: 16px;
+            color: white;
+            box-shadow: 0 10px 30px rgba(37, 99, 235, 0.3);
             position: relative;
+            overflow: hidden;
         }
         
-        .code-line {
+        .quote::before {
+            content: '"';
             position: absolute;
-            width: 100%;
-            color: var(--main-color);
-            font-size: 0.9rem;
+            top: -20px;
+            left: 20px;
+            font-size: 8rem;
+            opacity: 0.1;
+            font-family: serif;
         }
         
+        .quote-text {
+            font-size: 1.2rem;
+            font-style: italic;
+            margin-bottom: 1rem;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .quote-author {
+            font-weight: 500;
+            position: relative;
+            z-index: 2;
+        }
+        
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 2rem;
+            margin-top: 3rem;
+            color: var(--text-light);
+            border-top: 1px solid rgba(0, 0, 0, 0.1);
+        }
+        
+        /* Audio Control */
         .audio-control {
             position: fixed;
             bottom: 20px;
             right: 20px;
-            background: var(--button-bg);
-            border: 1px solid var(--main-color);
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
             border-radius: 50%;
-            width: 50px;
-            height: 50px;
+            width: 60px;
+            height: 60px;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: var(--main-color);
+            color: white;
             cursor: pointer;
             z-index: 100;
-            box-shadow: 0 0 10px var(--shadow-color);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            transform-style: preserve-3d;
+            transform: translateZ(5px);
+            transition: var(--transition);
         }
         
         .audio-control:hover {
-            background: var(--button-bg);
-        }
-        
-        .theme-toggle {
-            position: fixed;
-            bottom: 80px;
-            right: 20px;
-            background: var(--button-bg);
-            border: 1px solid var(--main-color);
-            border-radius: 50%;
-            width: 50px;
-            height: 50px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--main-color);
-            cursor: pointer;
-            z-index: 100;
-            box-shadow: 0 0 10px var(--shadow-color);
-        }
-        
-        .theme-toggle:hover {
-            background: var(--button-bg);
-        }
-        
-        footer {
-            margin-top: auto;
-            padding: 1.5rem;
-            text-align: center;
-            width: 100%;
-            border-top: 1px solid var(--main-color);
+            transform: translateZ(10px) rotate(10deg);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
         }
         
         /* Animations */
-        @keyframes pulse {
-            0% { box-shadow: 0 0 15px var(--shadow-color); }
-            100% { box-shadow: 0 0 30px var(--shadow-color), 0 0 60px var(--shadow-color); }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
         
-        @keyframes glitch-effect {
-            0% { text-shadow: 2px 2px 0px var(--secondary-color); }
-            92% { text-shadow: 2px 2px 0px var(--secondary-color); }
-            93% { text-shadow: -3px -3px 0px #ff00ff; }
-            94% { text-shadow: 2px 2px 0px var(--secondary-color); }
-            95% { text-shadow: 3px -3px 0px #ffff00; }
-            96% { text-shadow: 2px 2px 0px var(--secondary-color); }
-            97% { text-shadow: -4px 4px 0px #00ffff; }
-            98% { text-shadow: 2px 2px 0px var(--secondary-color); }
-            99% { text-shadow: 3px 3px 0px #ff0000; }
-            100% { text-shadow: 2px 2px 0px var(--secondary-color); }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
         
-        @keyframes typing {
-            from { width: 0 }
-            to { width: 100% }
+        @keyframes float {
+            0% { transform: translateY(0) translateZ(20px); }
+            50% { transform: translateY(-10px) translateZ(30px); }
+            100% { transform: translateY(0) translateZ(20px); }
         }
         
-        @keyframes blink-caret {
-            from, to { border-color: transparent }
-            50% { border-color: var(--main-color) }
+        .animated-element {
+            animation: fadeIn 1s ease forwards;
         }
         
-        @keyframes matrix {
-            0% { transform: translateY(-100%); opacity: 1; }
-            5% { opacity: 1; }
-            80% { opacity: 0.8; }
-            100% { transform: translateY(100vh); opacity: 0; }
-        }
+        .delay-1 { animation-delay: 0.2s; }
+        .delay-2 { animation-delay: 0.4s; }
+        .delay-3 { animation-delay: 0.6s; }
         
         /* Responsive design */
         @media (max-width: 768px) {
-            .glitch { font-size: 2.5rem; }
-            .terminal { padding: 1rem; }
-            .social-buttons { gap: 1rem; }
-            .btn-3d { width: 160px; padding: 0.7rem 1rem; }
+            .name { font-size: 2.5rem; }
+            .info-grid { grid-template-columns: 1fr; }
+            .social-buttons { flex-direction: column; align-items: center; }
+            .btn-3d { width: 100%; max-width: 280px; }
         }
         
         @media (max-width: 480px) {
-            .glitch { font-size: 2rem; }
+            .name { font-size: 2rem; }
             .logo { width: 140px; height: 140px; }
-            .btn-3d { width: 100%; max-width: 250px; }
+            .card { padding: 1.5rem; }
+            .container { padding: 1rem; }
         }
     </style>
 </head>
 <body>
-    <canvas id="matrix-bg"></canvas>
+    <!-- Loading Screen -->
+    <div id="loading-screen">
+        <div class="loader"></div>
+        <div class="loader-text">Loading Portfolio</div>
+        <div class="progress-bar">
+            <div class="progress" id="progress"></div>
+        </div>
+    </div>
     
-    <div class="container">
-        <div class="logo">
-            <img src="https://i.ibb.co/9mM42sT5/photo-2025-08-31-19-37-09-modified.png" alt="NengzX Logo">
+    <!-- Main Content -->
+    <div class="container" id="main-content">
+        <div class="header">
+            <div class="logo animated-element">
+                <img src="https://i.ibb.co/9mM42sT5/photo-2025-08-31-19-37-09-modified.png" alt="NengzX Logo">
+            </div>
+            <h1 class="name animated-element delay-1">NengzX</h1>
+            <p class="title animated-element delay-1">Security Researcher & Developer</p>
         </div>
         
-        <div class="glitch-container">
-            <h1 class="glitch">NengzX</h1>
-        </div>
-        
-        <div class="terminal">
-            <div class="terminal-header">
-                <div class="terminal-title">user@nengzx:~$ bio --display</div>
-                <div class="terminal-controls">
-                    <div class="control close"></div>
-                    <div class="control minimize"></div>
-                    <div class="control maximize"></div>
+        <div class="card animated-element delay-1">
+            <h2 class="card-title"><i class="fas fa-user"></i> About Me</h2>
+            <div class="info-grid">
+                <div class="info-item">
+                    <div class="info-label">Name</div>
+                    <div class="info-value">NengzXploit</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Location</div>
+                    <div class="info-value">Phnom Penh, Cambodia</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Profession</div>
+                    <div class="info-value">Security Researcher & Developer</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Specialization</div>
+                    <div class="info-value">Cybersecurity, GNU/Linux, Open Source</div>
                 </div>
             </div>
-            <div class="terminal-content">
-                <p class="command">whois NengzX</p>
-                <p class="output">Name: NengzXploit<br>
-                Location: Phnom Penh, Cambodia<br>
-                Work: Security Researcher & Developer</p>
-                
-                <p class="command">cat interests.txt</p>
-                <p class="output">Cybersecurity, GNU/Linux, Open Source</p>
-                
-                <p class="command">cat gaming.txt</p>
-                <p class="output">PUBGM, MLBB, COC</p>
-                
-                <p class="command">./daily_routine.sh</p>
-                <p class="output">Code, Hack, Learn, Game, Repeat</p>
-                
-                <div class="hacking-animation">
-                    <div class="code-line">Initializing system... [##########] 100%</div>
+        </div>
+        
+        <div class="card animated-element delay-2">
+            <h2 class="card-title"><i class="fas fa-gamepad"></i> Gaming</h2>
+            <div class="info-grid">
+                <div class="info-item">
+                    <div class="info-label">PUBG Mobile</div>
+                    <div class="info-value">Competitive Player</div>
                 </div>
-                
-                <p class="command">echo $LIFE_MOTTO</p>
-                <p class="typewriter">Simple tools, massive impact</p>
+                <div class="info-item">
+                    <div class="info-label">Mobile Legends</div>
+                    <div class="info-value">Mythic Rank</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Clash of Clans</div>
+                    <div class="info-value">TH14 Maxed</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Play Style</div>
+                    <div class="info-value">Strategic & Competitive</div>
+                </div>
             </div>
         </div>
         
-        <div class="social-buttons">
+        <div class="card animated-element delay-2">
+            <h2 class="card-title"><i class="fas fa-code"></i> Daily Routine</h2>
+            <div class="info-grid">
+                <div class="info-item">
+                    <div class="info-label">Morning</div>
+                    <div class="info-value">Code & Research</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Afternoon</div>
+                    <div class="info-value">Develop & Learn</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Evening</div>
+                    <div class="info-value">Game & Relax</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Motto</div>
+                    <div class="info-value">Simple tools, massive impact</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="social-buttons animated-element delay-3">
             <a href="https://www.facebook.com/nengzxroot/" class="btn-3d" target="_blank">
                 <i class="fab fa-facebook-f"></i> Facebook
             </a>
@@ -450,11 +497,12 @@
             </a>
         </div>
         
-        <div class="motto">
-            "In the realm of ones and zeros, we find our freedom"
+        <div class="quote animated-element delay-3">
+            <p class="quote-text">"In the realm of ones and zeros, we find our freedom"</p>
+            <p class="quote-author">- NengzX</p>
         </div>
         
-        <footer>
+        <footer class="animated-element delay-3">
             <p>NengzX &copy; 2023 | Secure. Develop. Conquer.</p>
         </footer>
     </div>
@@ -463,78 +511,44 @@
         <i class="fas fa-music"></i>
     </div>
     
-    <div class="theme-toggle" onclick="toggleTheme()">
-        <i class="fas fa-moon"></i>
-    </div>
-    
     <audio id="bgAudio" loop>
         <source src="https://d.top4top.io/m_35392q4sm1.m4a" type="audio/mpeg">
     </audio>
     
     <script>
-        // Matrix background effect
-        const canvas = document.getElementById('matrix-bg');
-        const ctx = canvas.getContext('2d');
-        
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-        
-        const letters = '01010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101';
-        const fontSize = 12;
-        const columns = canvas.width / fontSize;
-        
-        const drops = [];
-        for (let i = 0; i < columns; i++) {
-            drops[i] = 1;
-        }
-        
-        function drawMatrix() {
-            ctx.fillStyle = 'rgba(0, 10, 0, 0.1)';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
+        // Loading screen simulation
+        document.addEventListener('DOMContentLoaded', function() {
+            const progressBar = document.getElementById('progress');
+            const loadingScreen = document.getElementById('loading-screen');
+            const mainContent = document.getElementById('main-content');
+            const audio = document.getElementById('bgAudio');
             
-            ctx.fillStyle = document.body.classList.contains('light-theme') ? '#0066cc' : '#0f0';
-            ctx.font = `${fontSize}px monospace`;
-            
-            for (let i = 0; i < drops.length; i++) {
-                const text = letters[Math.floor(Math.random() * letters.length)];
-                ctx.fillText(text, i * fontSize, drops[i] * fontSize);
-                
-                if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
-                    drops[i] = 0;
+            // Simulate loading progress
+            let progress = 0;
+            const interval = setInterval(() => {
+                progress += Math.random() * 10;
+                if (progress >= 100) {
+                    progress = 100;
+                    clearInterval(interval);
+                    
+                    // Hide loading screen and show content
+                    setTimeout(() => {
+                        loadingScreen.style.opacity = '0';
+                        loadingScreen.style.visibility = 'hidden';
+                        mainContent.style.opacity = '1';
+                        mainContent.style.transform = 'translateY(0)';
+                        
+                        // Try to auto-play music
+                        audio.play().then(() => {
+                            audioPlaying = true;
+                        }).catch(err => {
+                            console.log('Auto-play prevented:', err);
+                        });
+                    }, 500);
                 }
-                
-                drops[i]++;
-            }
-        }
-        
-        setInterval(drawMatrix, 50);
-        
-        // Window resize handler
-        window.addEventListener('resize', () => {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
+                progressBar.style.width = progress + '%';
+            }, 200);
         });
-        
-        // Hacking animation
-        const codeLines = [
-            "Initializing system... [##########] 100%",
-            "Accessing mainframe... SUCCESS",
-            "Bypassing security protocols... OK",
-            "Encrypting connection... DONE",
-            "Running vulnerability scan...",
-            "> 0 critical issues detected",
-            "System secure. Have a nice day."
-        ];
-        
-        const hackingElement = document.querySelector('.hacking-animation');
-        let currentLine = 0;
-        
-        function updateHackingAnimation() {
-            hackingElement.innerHTML = `<div class="code-line">${codeLines[currentLine]}</div>`;
-            currentLine = (currentLine + 1) % codeLines.length;
-        }
-        
-        setInterval(updateHackingAnimation, 2000);
         
         // Audio control
         const audio = document.getElementById('bgAudio');
@@ -551,63 +565,11 @@
             audioPlaying = !audioPlaying;
         }
         
-        // Auto-play music on page load
-        window.addEventListener('load', function() {
-            audio.play().then(() => {
-                audioPlaying = true;
-                document.querySelector('.audio-control i').className = 'fas fa-pause';
-            }).catch(err => {
-                console.log('Auto-play prevented:', err);
-                // Add a fallback for user interaction
-                document.body.addEventListener('click', function() {
-                    if (!audioPlaying) {
-                        audio.play().then(() => {
-                            audioPlaying = true;
-                            document.querySelector('.audio-control i').className = 'fas fa-pause';
-                        }).catch(err => {
-                            console.log('Audio playback failed:', err);
-                        });
-                    }
-                }, { once: true });
-            });
-        });
-        
-        // Theme toggle functionality
-        function toggleTheme() {
-            const body = document.body;
-            const themeIcon = document.querySelector('.theme-toggle i');
-            
-            if (body.classList.contains('light-theme')) {
-                body.classList.remove('light-theme');
-                themeIcon.className = 'fas fa-moon';
-                localStorage.setItem('theme', 'dark');
-            } else {
-                body.classList.add('light-theme');
-                themeIcon.className = 'fas fa-sun';
-                localStorage.setItem('theme', 'light');
-            }
-            
-            // Update matrix color
-            drawMatrix();
-        }
-        
-        // Check for saved theme preference
-        const savedTheme = localStorage.getItem('theme');
-        if (savedTheme === 'light') {
-            document.body.classList.add('light-theme');
-            document.querySelector('.theme-toggle i').className = 'fas fa-sun';
-        }
-        
-        // Glitch effect
-        const glitchElement = document.querySelector('.glitch');
-        
-        function triggerGlitch() {
-            glitchElement.style.animation = 'none';
-            void glitchElement.offsetWidth; // Trigger reflow
-            glitchElement.style.animation = 'glitch-effect 5s infinite';
-        }
-        
-        setInterval(triggerGlitch, 5000);
+        // Add floating animation to logo
+        const logo = document.querySelector('.logo');
+        setTimeout(() => {
+            logo.style.animation = 'float 6s ease-in-out infinite';
+        }, 1000);
     </script>
 </body>
 </html>
