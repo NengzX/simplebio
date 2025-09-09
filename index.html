@@ -6,19 +6,39 @@
     <title>NengzX :: Security Researcher</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
         
         :root {
             --primary: #2563eb;
             --primary-dark: #1d4ed8;
-            --secondary: #8b5cf6;
+            --secondary: #0ea5e9;
             --accent: #06b6d4;
             --text: #1f2937;
             --text-light: #6b7280;
-            --bg: #f8fafc;
-            --card-bg: #ffffff;
+            --bg: #f0f9ff;
+            --card-bg: rgba(255, 255, 255, 0.7);
             --shadow: rgba(0, 0, 0, 0.1);
             --transition: all 0.3s ease;
+            --glass-bg: rgba(255, 255, 255, 0.15);
+            --glass-border: rgba(255, 255, 255, 0.2);
+            --water-primary: #0891b2;
+            --water-secondary: #0ea5e9;
+        }
+        
+        .dark-mode {
+            --primary: #3b82f6;
+            --primary-dark: #2563eb;
+            --secondary: #0ea5e9;
+            --accent: #06b6d4;
+            --text: #f3f4f6;
+            --text-light: #d1d5db;
+            --bg: #0c1729;
+            --card-bg: rgba(15, 23, 42, 0.7);
+            --shadow: rgba(0, 0, 0, 0.3);
+            --glass-bg: rgba(15, 23, 42, 0.2);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --water-primary: #06b6d4;
+            --water-secondary: #0ea5e9;
         }
         
         * {
@@ -29,79 +49,132 @@
         }
         
         body {
-            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            background: linear-gradient(135deg, var(--bg) 0%, #e0f2fe 100%);
             color: var(--text);
             min-height: 100vh;
             overflow-x: hidden;
+            transition: var(--transition);
+            position: relative;
         }
         
-        /* Loading Screen */
-        #loading-screen {
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 15% 50%, rgba(6, 182, 212, 0.15) 0%, transparent 25%),
+                radial-gradient(circle at 85% 30%, rgba(14, 165, 233, 0.15) 0%, transparent 25%),
+                radial-gradient(circle at 50% 80%, rgba(37, 99, 235, 0.1) 0%, transparent 25%);
+            z-index: -1;
+        }
+        
+        .dark-mode body::before {
+            background: 
+                radial-gradient(circle at 15% 50%, rgba(6, 182, 212, 0.1) 0%, transparent 25%),
+                radial-gradient(circle at 85% 30%, rgba(14, 165, 233, 0.1) 0%, transparent 25%),
+                radial-gradient(circle at 50% 80%, rgba(37, 99, 235, 0.08) 0%, transparent 25%);
+        }
+        
+        /* Water animation background */
+        .water-background {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            z-index: 9999;
-            transition: opacity 0.5s ease-out, visibility 0.5s;
-        }
-        
-        .loader {
-            width: 60px;
-            height: 60px;
-            border: 5px solid rgba(255, 255, 255, 0.2);
-            border-radius: 50%;
-            border-top: 5px solid white;
-            animation: spin 1.2s linear infinite;
-            margin-bottom: 20px;
-        }
-        
-        .loader-text {
-            color: white;
-            font-size: 1.2rem;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-        }
-        
-        .progress-bar {
-            width: 200px;
-            height: 4px;
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 4px;
-            margin-top: 15px;
+            z-index: -2;
+            opacity: 0.5;
             overflow: hidden;
         }
         
-        .progress {
-            height: 100%;
-            width: 0%;
-            background: white;
-            border-radius: 4px;
-            transition: width 0.4s ease;
+        .wave {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 200%;
+            height: 15%;
+            background: linear-gradient(90deg, var(--water-primary) 0%, var(--water-secondary) 100%);
+            opacity: 0.1;
+            border-radius: 50%;
+            animation: wave 15s linear infinite;
         }
         
-        /* Main Content */
+        .wave:nth-child(1) {
+            animation-delay: 0s;
+            bottom: 10%;
+            opacity: 0.05;
+        }
+        
+        .wave:nth-child(2) {
+            animation-delay: -5s;
+            bottom: 15%;
+            opacity: 0.1;
+        }
+        
+        .wave:nth-child(3) {
+            animation-delay: -2s;
+            bottom: 5%;
+            opacity: 0.07;
+        }
+        
+        /* Container */
         .container {
             max-width: 1200px;
             margin: 0 auto;
             padding: 2rem;
-            opacity: 0;
-            transform: translateY(20px);
-            transition: opacity 0.8s ease, transform 0.8s ease;
         }
         
+        /* Header */
         .header {
             display: flex;
             flex-direction: column;
             align-items: center;
             margin-bottom: 3rem;
+            padding: 2rem 0;
         }
         
+        /* Glassmorphism card */
+        .glass-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-radius: 20px;
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            padding: 2.5rem;
+            margin-bottom: 2.5rem;
+            transition: var(--transition);
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .glass-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(
+                45deg,
+                transparent,
+                rgba(255, 255, 255, 0.1),
+                transparent
+            );
+            transform: rotate(45deg);
+            animation: shine 6s infinite;
+            pointer-events: none;
+        }
+        
+        .glass-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+        }
+        
+        /* Logo */
         .logo {
             width: 180px;
             height: 180px;
@@ -111,15 +184,9 @@
             position: relative;
             overflow: hidden;
             background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
-            box-shadow: 0 15px 30px rgba(37, 99, 235, 0.2);
-            transform-style: preserve-3d;
-            transform: translateZ(20px);
+            box-shadow: 0 15px 30px rgba(37, 99, 235, 0.3);
             transition: var(--transition);
-        }
-        
-        .logo:hover {
-            transform: translateZ(30px) rotate(5deg);
-            box-shadow: 0 20px 40px rgba(37, 99, 235, 0.3);
+            border: 2px solid rgba(255, 255, 255, 0.3);
         }
         
         .logo img {
@@ -127,9 +194,10 @@
             height: 100%;
             border-radius: 50%;
             object-fit: cover;
-            border: 4px solid white;
+            border: 4px solid rgba(255, 255, 255, 0.5);
         }
         
+        /* Name */
         .name {
             font-size: 3.5rem;
             font-weight: 700;
@@ -153,6 +221,7 @@
             border-radius: 2px;
         }
         
+        /* Title */
         .title {
             color: var(--text-light);
             font-size: 1.2rem;
@@ -160,37 +229,9 @@
             text-align: center;
         }
         
-        /* Cards */
-        .card {
-            background: var(--card-bg);
-            border-radius: 16px;
-            padding: 2rem;
-            margin-bottom: 2.5rem;
-            box-shadow: 0 10px 30px var(--shadow);
-            transform-style: preserve-3d;
-            transform: translateZ(10px);
-            transition: var(--transition);
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .card:hover {
-            transform: translateZ(20px);
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
-        }
-        
-        .card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 5px;
-            background: linear-gradient(90deg, var(--primary), var(--secondary));
-        }
-        
+        /* Card title */
         .card-title {
-            font-size: 1.5rem;
+            font-size: 1.8rem;
             margin-bottom: 1.5rem;
             color: var(--primary);
             display: flex;
@@ -199,9 +240,10 @@
         
         .card-title i {
             margin-right: 10px;
-            font-size: 1.8rem;
+            font-size: 2rem;
         }
         
+        /* Info grid */
         .info-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
@@ -209,15 +251,18 @@
         }
         
         .info-item {
-            padding: 1rem;
-            background: rgba(37, 99, 235, 0.05);
-            border-radius: 12px;
+            padding: 1.5rem;
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: 16px;
+            border: 1px solid var(--glass-border);
             transition: var(--transition);
         }
         
         .info-item:hover {
-            background: rgba(37, 99, 235, 0.1);
             transform: translateY(-5px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
         }
         
         .info-label {
@@ -243,13 +288,15 @@
             text-decoration: none;
             border-radius: 12px;
             font-weight: 500;
-            box-shadow: 0 5px 15px rgba(37, 99, 235, 0.4);
-            transform-style: preserve-3d;
+            box-shadow: 0 5px 15px rgba(37, 99, 235, 0.4),
+                        inset 0 2px 0 rgba(255, 255, 255, 0.3);
             transform: translateY(0);
             transition: var(--transition);
             position: relative;
             overflow: hidden;
             margin: 0.5rem;
+            border: none;
+            cursor: pointer;
         }
         
         .btn-3d i {
@@ -258,13 +305,15 @@
         }
         
         .btn-3d:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 20px rgba(37, 99, 235, 0.5);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(37, 99, 235, 0.5),
+                        inset 0 2px 0 rgba(255, 255, 255, 0.3);
         }
         
         .btn-3d:active {
-            transform: translateY(2px);
-            box-shadow: 0 3px 10px rgba(37, 99, 235, 0.4);
+            transform: translateY(1px);
+            box-shadow: 0 3px 10px rgba(37, 99, 235, 0.4),
+                        inset 0 2px 0 rgba(255, 255, 255, 0.3);
         }
         
         .btn-3d::before {
@@ -289,12 +338,15 @@
         /* Quote */
         .quote {
             text-align: center;
-            padding: 2rem;
+            padding: 3rem 2rem;
             margin: 3rem 0;
-            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
-            border-radius: 16px;
-            color: white;
-            box-shadow: 0 10px 30px rgba(37, 99, 235, 0.3);
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-radius: 20px;
+            border: 1px solid var(--glass-border);
+            color: var(--text);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
             position: relative;
             overflow: hidden;
         }
@@ -307,20 +359,23 @@
             font-size: 8rem;
             opacity: 0.1;
             font-family: serif;
+            color: var(--primary);
         }
         
         .quote-text {
-            font-size: 1.2rem;
+            font-size: 1.3rem;
             font-style: italic;
             margin-bottom: 1rem;
             position: relative;
             z-index: 2;
+            line-height: 1.6;
         }
         
         .quote-author {
             font-weight: 500;
             position: relative;
             z-index: 2;
+            color: var(--primary);
         }
         
         /* Footer */
@@ -329,39 +384,86 @@
             padding: 2rem;
             margin-top: 3rem;
             color: var(--text-light);
-            border-top: 1px solid rgba(0, 0, 0, 0.1);
+            border-top: 1px solid var(--glass-border);
         }
         
-        /* Audio Control */
+        /* Theme toggle */
+        .theme-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text);
+            cursor: pointer;
+            z-index: 100;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            transition: var(--transition);
+        }
+        
+        .theme-toggle:hover {
+            transform: rotate(15deg);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+        }
+        
+        /* Audio control */
         .audio-control {
             position: fixed;
             bottom: 20px;
             right: 20px;
-            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
             border-radius: 50%;
-            width: 60px;
-            height: 60px;
+            width: 50px;
+            height: 50px;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: white;
+            color: var(--text);
             cursor: pointer;
             z-index: 100;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-            transform-style: preserve-3d;
-            transform: translateZ(5px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
             transition: var(--transition);
         }
         
         .audio-control:hover {
-            transform: translateZ(10px) rotate(10deg);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+            transform: scale(1.1);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
         }
         
         /* Animations */
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+        @keyframes wave {
+            0% {
+                transform: translateX(0) rotate(0deg);
+            }
+            50% {
+                transform: translateX(-25%) rotate(5deg);
+            }
+            100% {
+                transform: translateX(-50%) rotate(0deg);
+            }
+        }
+        
+        @keyframes shine {
+            0% {
+                transform: translateX(-100%) rotate(45deg);
+            }
+            20% {
+                transform: translateX(100%) rotate(45deg);
+            }
+            100% {
+                transform: translateX(100%) rotate(45deg);
+            }
         }
         
         @keyframes fadeIn {
@@ -370,9 +472,9 @@
         }
         
         @keyframes float {
-            0% { transform: translateY(0) translateZ(20px); }
-            50% { transform: translateY(-10px) translateZ(30px); }
-            100% { transform: translateY(0) translateZ(20px); }
+            0% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-10px) rotate(2deg); }
+            100% { transform: translateY(0) rotate(0deg); }
         }
         
         .animated-element {
@@ -389,28 +491,32 @@
             .info-grid { grid-template-columns: 1fr; }
             .social-buttons { flex-direction: column; align-items: center; }
             .btn-3d { width: 100%; max-width: 280px; }
+            .glass-card { padding: 1.5rem; }
         }
         
         @media (max-width: 480px) {
             .name { font-size: 2rem; }
             .logo { width: 140px; height: 140px; }
-            .card { padding: 1.5rem; }
             .container { padding: 1rem; }
+            .quote-text { font-size: 1.1rem; }
         }
     </style>
 </head>
 <body>
-    <!-- Loading Screen -->
-    <div id="loading-screen">
-        <div class="loader"></div>
-        <div class="loader-text">Loading Portfolio</div>
-        <div class="progress-bar">
-            <div class="progress" id="progress"></div>
-        </div>
+    <!-- Water background -->
+    <div class="water-background">
+        <div class="wave"></div>
+        <div class="wave"></div>
+        <div class="wave"></div>
+    </div>
+    
+    <!-- Theme toggle -->
+    <div class="theme-toggle" onclick="toggleTheme()">
+        <i class="fas fa-moon"></i>
     </div>
     
     <!-- Main Content -->
-    <div class="container" id="main-content">
+    <div class="container">
         <div class="header">
             <div class="logo animated-element">
                 <img src="https://i.ibb.co/9mM42sT5/photo-2025-08-31-19-37-09-modified.png" alt="NengzX Logo">
@@ -419,7 +525,7 @@
             <p class="title animated-element delay-1">Security Researcher & Developer</p>
         </div>
         
-        <div class="card animated-element delay-1">
+        <div class="glass-card animated-element delay-1">
             <h2 class="card-title"><i class="fas fa-user"></i> About Me</h2>
             <div class="info-grid">
                 <div class="info-item">
@@ -441,7 +547,7 @@
             </div>
         </div>
         
-        <div class="card animated-element delay-2">
+        <div class="glass-card animated-element delay-2">
             <h2 class="card-title"><i class="fas fa-gamepad"></i> Gaming</h2>
             <div class="info-grid">
                 <div class="info-item">
@@ -463,7 +569,7 @@
             </div>
         </div>
         
-        <div class="card animated-element delay-2">
+        <div class="glass-card animated-element delay-2">
             <h2 class="card-title"><i class="fas fa-code"></i> Daily Routine</h2>
             <div class="info-grid">
                 <div class="info-item">
@@ -516,60 +622,103 @@
     </audio>
     
     <script>
-        // Loading screen simulation
-        document.addEventListener('DOMContentLoaded', function() {
-            const progressBar = document.getElementById('progress');
-            const loadingScreen = document.getElementById('loading-screen');
-            const mainContent = document.getElementById('main-content');
+        // Auto-play music
+        window.addEventListener('DOMContentLoaded', function() {
             const audio = document.getElementById('bgAudio');
+            let audioPlaying = false;
             
-            // Simulate loading progress
-            let progress = 0;
-            const interval = setInterval(() => {
-                progress += Math.random() * 10;
-                if (progress >= 100) {
-                    progress = 100;
-                    clearInterval(interval);
-                    
-                    // Hide loading screen and show content
-                    setTimeout(() => {
-                        loadingScreen.style.opacity = '0';
-                        loadingScreen.style.visibility = 'hidden';
-                        mainContent.style.opacity = '1';
-                        mainContent.style.transform = 'translateY(0)';
-                        
-                        // Try to auto-play music
-                        audio.play().then(() => {
-                            audioPlaying = true;
-                        }).catch(err => {
-                            console.log('Auto-play prevented:', err);
-                        });
-                    }, 500);
+            // Try to auto-play
+            const playAudio = () => {
+                audio.play().then(() => {
+                    audioPlaying = true;
+                    document.querySelector('.audio-control i').className = 'fas fa-pause';
+                    console.log('Audio is playing automatically');
+                }).catch(err => {
+                    console.log('Auto-play prevented:', err);
+                    // Add a fallback for user interaction
+                    document.body.addEventListener('click', function() {
+                        if (!audioPlaying) {
+                            audio.play().then(() => {
+                                audioPlaying = true;
+                                document.querySelector('.audio-control i').className = 'fas fa-pause';
+                            }).catch(err => {
+                                console.log('Audio playback failed:', err);
+                            });
+                        }
+                    }, { once: true });
+                });
+            };
+            
+            // Try to play after a short delay to increase chances of success
+            setTimeout(playAudio, 1000);
+            
+            // Toggle audio function
+            window.toggleAudio = function() {
+                if (audioPlaying) {
+                    audio.pause();
+                    document.querySelector('.audio-control i').className = 'fas fa-music';
+                } else {
+                    audio.play();
+                    document.querySelector('.audio-control i').className = 'fas fa-pause';
                 }
-                progressBar.style.width = progress + '%';
-            }, 200);
+                audioPlaying = !audioPlaying;
+            };
         });
         
-        // Audio control
-        const audio = document.getElementById('bgAudio');
-        let audioPlaying = false;
-        
-        function toggleAudio() {
-            if (audioPlaying) {
-                audio.pause();
-                document.querySelector('.audio-control i').className = 'fas fa-music';
+        // Theme toggle functionality
+        function toggleTheme() {
+            const body = document.body;
+            const themeIcon = document.querySelector('.theme-toggle i');
+            
+            if (body.classList.contains('dark-mode')) {
+                body.classList.remove('dark-mode');
+                themeIcon.className = 'fas fa-moon';
+                localStorage.setItem('theme', 'light');
             } else {
-                audio.play();
-                document.querySelector('.audio-control i').className = 'fas fa-pause';
+                body.classList.add('dark-mode');
+                themeIcon.className = 'fas fa-sun';
+                localStorage.setItem('theme', 'dark');
             }
-            audioPlaying = !audioPlaying;
         }
         
-        // Add floating animation to logo
-        const logo = document.querySelector('.logo');
-        setTimeout(() => {
+        // Check for saved theme preference
+        document.addEventListener('DOMContentLoaded', function() {
+            const savedTheme = localStorage.getItem('theme');
+            const themeIcon = document.querySelector('.theme-toggle i');
+            
+            if (savedTheme === 'dark') {
+                document.body.classList.add('dark-mode');
+                themeIcon.className = 'fas fa-sun';
+            } else {
+                document.body.classList.remove('dark-mode');
+                themeIcon.className = 'fas fa-moon';
+            }
+            
+            // Add floating animation to logo
+            const logo = document.querySelector('.logo');
             logo.style.animation = 'float 6s ease-in-out infinite';
-        }, 1000);
+        });
+        
+        // Add animation to elements when they come into view
+        const observerOptions = {
+            root: null,
+            rootMargin: '0px',
+            threshold: 0.1
+        };
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+        
+        // Observe all animated elements
+        document.querySelectorAll('.animated-element').forEach(el => {
+            observer.observe(el);
+        });
     </script>
 </body>
 </html>
