@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NengzX :: Security Researcher</title>
+    <title>NengzX</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
@@ -134,6 +134,38 @@
             align-items: center;
             margin-bottom: 3rem;
             padding: 2rem 0;
+            position: relative;
+        }
+        
+        /* Control buttons */
+        .control-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .control-btn {
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text);
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            transition: var(--transition);
+        }
+        
+        .control-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
         }
         
         /* Glassmorphism card */
@@ -180,7 +212,7 @@
             height: 180px;
             border-radius: 50%;
             padding: 8px;
-            margin: 2rem 0;
+            margin: 2rem 0 1rem;
             position: relative;
             overflow: hidden;
             background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
@@ -335,6 +367,15 @@
             margin: 2rem 0;
         }
         
+        /* Top social buttons */
+        .top-social-buttons {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+        
         /* Quote */
         .quote {
             text-align: center;
@@ -387,60 +428,6 @@
             border-top: 1px solid var(--glass-border);
         }
         
-        /* Theme toggle */
-        .theme-toggle {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background: var(--glass-bg);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border: 1px solid var(--glass-border);
-            border-radius: 50%;
-            width: 50px;
-            height: 50px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--text);
-            cursor: pointer;
-            z-index: 100;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            transition: var(--transition);
-        }
-        
-        .theme-toggle:hover {
-            transform: rotate(15deg);
-            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
-        }
-        
-        /* Audio control */
-        .audio-control {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background: var(--glass-bg);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border: 1px solid var(--glass-border);
-            border-radius: 50%;
-            width: 50px;
-            height: 50px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--text);
-            cursor: pointer;
-            z-index: 100;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            transition: var(--transition);
-        }
-        
-        .audio-control:hover {
-            transform: scale(1.1);
-            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
-        }
-        
         /* Animations */
         @keyframes wave {
             0% {
@@ -489,9 +476,10 @@
         @media (max-width: 768px) {
             .name { font-size: 2.5rem; }
             .info-grid { grid-template-columns: 1fr; }
-            .social-buttons { flex-direction: column; align-items: center; }
+            .social-buttons, .top-social-buttons { flex-direction: column; align-items: center; }
             .btn-3d { width: 100%; max-width: 280px; }
             .glass-card { padding: 1.5rem; }
+            .control-buttons { margin-top: 1rem; }
         }
         
         @media (max-width: 480px) {
@@ -515,14 +503,33 @@
         <i class="fas fa-moon"></i>
     </div>
     
+    <!-- Audio control -->
+    <div class="audio-control" onclick="toggleAudio()">
+        <i class="fas fa-music"></i>
+    </div>
+    
     <!-- Main Content -->
     <div class="container">
         <div class="header">
             <div class="logo animated-element">
                 <img src="https://i.ibb.co/9mM42sT5/photo-2025-08-31-19-37-09-modified.png" alt="NengzX Logo">
             </div>
+            
             <h1 class="name animated-element delay-1">NengzX</h1>
             <p class="title animated-element delay-1">Security Researcher & Developer</p>
+            
+            <!-- Social buttons under the profile -->
+            <div class="top-social-buttons animated-element delay-2">
+                <a href="https://www.facebook.com/nengzxroot/" class="btn-3d" target="_blank">
+                    <i class="fab fa-facebook-f"></i> Facebook
+                </a>
+                <a href="https://github.com/NengzX" class="btn-3d" target="_blank">
+                    <i class="fab fa-github"></i> GitHub
+                </a>
+                <a href="https://t.me/NengzX_theGOAT" class="btn-3d" target="_blank">
+                    <i class="fab fa-telegram-plane"></i> Telegram
+                </a>
+            </div>
         </div>
         
         <div class="glass-card animated-element delay-1">
@@ -591,18 +598,6 @@
             </div>
         </div>
         
-        <div class="social-buttons animated-element delay-3">
-            <a href="https://www.facebook.com/nengzxroot/" class="btn-3d" target="_blank">
-                <i class="fab fa-facebook-f"></i> Facebook
-            </a>
-            <a href="https://github.com/NengzX" class="btn-3d" target="_blank">
-                <i class="fab fa-github"></i> GitHub
-            </a>
-            <a href="https://t.me/NengzX_theGOAT" class="btn-3d" target="_blank">
-                <i class="fab fa-telegram-plane"></i> Telegram
-            </a>
-        </div>
-        
         <div class="quote animated-element delay-3">
             <p class="quote-text">"In the realm of ones and zeros, we find our freedom"</p>
             <p class="quote-author">- NengzX</p>
@@ -611,10 +606,6 @@
         <footer class="animated-element delay-3">
             <p>NengzX &copy; 2023 | Secure. Develop. Conquer.</p>
         </footer>
-    </div>
-    
-    <div class="audio-control" onclick="toggleAudio()">
-        <i class="fas fa-music"></i>
     </div>
     
     <audio id="bgAudio" loop>
